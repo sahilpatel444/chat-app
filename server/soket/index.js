@@ -3,6 +3,7 @@ const { Server } = require("socket.io");
 const http = require("http");
 const getUserDetailsFromToken = require("../helpers/getUserDetailsFromToken");
 const UserModel = require("../models/UserModel");
+const cors = require("cors");
 
 const {
   ConversationModel,
@@ -14,12 +15,13 @@ const app = express();
 
 // socket connection
 const server = http.createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: 'https://talk-now-chatapp.vercel.app',
-    credentials: true,
-  },
-});
+app.use(cors({ origin: "*" }));
+// const io = new Server(server, {
+//   cors: {
+//     origin: 'https://talk-now-chatapp.vercel.app',
+//     credentials: true,
+//   },
+// });
 // socket running at http://localhost:8080/
 
 // online user
@@ -98,11 +100,11 @@ io.on("connection", async (socket) => {
         _id: conversation?._id,
       },
       {
-        "$push" : { messages: saveMessage?._id },
+        $push: { messages: saveMessage?._id },
       }
     );
     const getConversationMessage = await ConversationModel.findOne({
-      "$or": [
+      $or: [
         { sender: data?.sender, receiver: data?.receiver },
         { sender: data?.receiver, receiver: data?.sender },
       ],
@@ -111,49 +113,48 @@ io.on("connection", async (socket) => {
       .sort({ updatedAt: -1 });
 
     io.to(data?.sender).emit("message", getConversationMessage?.messages || []);
-    io.to(data?.receiver).emit("message",getConversationMessage?.messages || []);
+    io.to(data?.receiver).emit(
+      "message",
+      getConversationMessage?.messages || []
+    );
 
     //send conversation
-    const conversationSender = await getConversation(data?.sender)
-    const conversationReceiver = await getConversation(data?.receiver)
+    const conversationSender = await getConversation(data?.sender);
+    const conversationReceiver = await getConversation(data?.receiver);
 
     io.to(data?.sender).emit("conversation", conversationSender);
-    io.to(data?.receiver).emit("conversation",conversationReceiver);
-
+    io.to(data?.receiver).emit("conversation", conversationReceiver);
   });
   //sidebar
   socket.on("sidebar", async (currentUserId) => {
     console.log("current user", currentUserId);
 
-    const conversation = await getConversation(currentUserId)
+    const conversation = await getConversation(currentUserId);
 
-        socket.emit("conversation", conversation);
-
+    socket.emit("conversation", conversation);
   });
 
-  socket.on('seen',async(msgByUserId)=>{
-
+  socket.on("seen", async (msgByUserId) => {
     let conversation = await ConversationModel.findOne({
       $or: [
         { sender: user?._id, receiver: msgByUserId },
         { sender: msgByUserId, receiver: user?._id },
       ],
     });
-    const conversationMessageId = conversation?.messages || []
+    const conversationMessageId = conversation?.messages || [];
 
     const updateMessagws = await MessageModel.updateMany(
-      {_id : { "$in" : conversationMessageId}, msgByUserId : msgByUserId},
-      { "$set" : {seen : true}}
-    )
+      { _id: { $in: conversationMessageId }, msgByUserId: msgByUserId },
+      { $set: { seen: true } }
+    );
 
-      //send conversation
-      const conversationSender = await getConversation(user?._id?.toString())
-      const conversationReceiver = await getConversation(msgByUserId)
-  
-      io.to(user?._id?.toString()).emit("conversation", conversationSender);
-      io.to(msgByUserId).emit("conversation",conversationReceiver);
+    //send conversation
+    const conversationSender = await getConversation(user?._id?.toString());
+    const conversationReceiver = await getConversation(msgByUserId);
 
-  })
+    io.to(user?._id?.toString()).emit("conversation", conversationSender);
+    io.to(msgByUserId).emit("conversation", conversationReceiver);
+  });
 
   //disconnect
   socket.on("disconnect", () => {
