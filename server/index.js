@@ -12,6 +12,7 @@ app.use(
   cors({
     origin: 'https://talk-now-chatapp.vercel.app',
    
+    
     credentials: true,
   })
 );
