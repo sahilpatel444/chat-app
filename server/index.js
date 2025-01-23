@@ -11,6 +11,7 @@ const path = require("path");
 app.use(
   cors({
     origin: 'https://talk-now-chatapp.vercel.app',
+    methods: ['GET', 'POST'], // Methods allowed
     credentials: true,
   })
 );
