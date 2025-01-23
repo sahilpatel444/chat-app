@@ -18,7 +18,7 @@ const io = new Server(server, {
   cors: {
     origin: process.env.FRONTEND_URL,
     methods: ['GET', 'POST'], // Methods allowed
-    transports: ["websocket", "polling"], // Use both transports
+    transports: ["websocket"], // Use both transports
     credentials: true,
   },
 });
