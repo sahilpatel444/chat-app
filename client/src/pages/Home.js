@@ -38,23 +38,23 @@ const Home = () => {
   }, []);
 
   // socket connectiom
-  // useEffect(() => {
-  //   const socketConnection = io(process.env.REACT_APP_BACKEND_URL || 'https://chat-app-server-app.vercel.app' , {
-  //     auth: {
-  //       token: localStorage.getItem("token"),
-  //     },
-  //   });
+  useEffect(() => {
+    const socketConnection = io(process.env.REACT_APP_BACKEND_URL || 'https://chat-app-server-app.vercel.app' , {
+      auth: {
+        token: localStorage.getItem("token"),
+      },
+    });
 
-  //   socketConnection.on("onlineUser", (data) => {
-  //     console.log(data);
-  //     dispatch(setOnlineUser(data))
-  //   });
+    socketConnection.on("onlineUser", (data) => {
+      console.log(data);
+      dispatch(setOnlineUser(data))
+    });
 
-  //   dispatch(setSocketConnection(socketConnection))
-  //   return () => {
-  //     socketConnection.disconnect();
-  //   };
-  // }, []);
+    dispatch(setSocketConnection(socketConnection))
+    return () => {
+      socketConnection.disconnect();
+    };
+  }, []);
 
   const basePath = location.pathname === '/';
 
