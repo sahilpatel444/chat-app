@@ -7,10 +7,10 @@ const cookieParser = require("cookie-parser");
 const { app, server } = require("./soket/index");
 const path = require("path");
 
-// const app = express()
+const app = express()
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: 'https://talk-now-chatapp.vercel.app',
     credentials: true,
   })
 );
