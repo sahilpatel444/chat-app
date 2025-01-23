@@ -17,9 +17,10 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: process.env.FRONTEND_URL,
+    methods: ['GET', 'POST'], // Methods allowed
+    transports: ["websocket", "polling"], // Use both transports
     credentials: true,
   },
-  transports: ["websocket", "polling"], // Use both transports
 });
 // socket running at http://localhost:8080/
 
