@@ -14,15 +14,14 @@ const app = express();
 
 // socket connection
 const server = http.createServer(app);
-
 const io = new Server(server, {
   cors: {
-    origin: 'https://talk-now-chatapp.vercel.app ',
+    origin: process.env.FRONTEND_URL,
     credentials: true,
   },
   transports: ["websocket", "polling"], // Use both transports
 });
-
+// socket running at http://localhost:8080/
 
 // online user
 const onlineUser = new Set();
