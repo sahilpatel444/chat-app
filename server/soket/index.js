@@ -10,6 +10,7 @@ const {
   MessageModel,
 } = require("../models/ConversationModel");
 const getConversation = require("../helpers/getConversation");
+const { default: socket } = require("../../client/src/socket/socket");
 
 const app = express();
 
@@ -20,7 +21,6 @@ const io = new Server(server, {
   cors: {
     // origin: "https://talk-now-chatapp.vercel.app",
     origin: `${process.env.FRONTEND_URL}`,
-  
     credentials: true,
   },
 });
@@ -33,6 +33,9 @@ io.on("connection", async (socket) => {
   console.log("connection", socket.id);
 
   const token = socket.handshake.auth.token;
+  // if (!token) {
+  //   socket.disconnect(true);
+  // }
 
   // current user details
   const user = await getUserDetailsFromToken(token);
@@ -44,39 +47,30 @@ io.on("connection", async (socket) => {
   io.emit("onlineUser", Array.from(onlineUser));
 
   socket.on("message-page", async (userId) => {
-    try {
-      const userDetails = await UserModel.findById(userId).select("-password");
-  
-      if (!userDetails) {
-        return socket.emit("error", { message: "User not found" });
-      }
-  
-      const payload = {
-        _id: userDetails._id,
-        name: userDetails.name,
-        email: userDetails.email,
-        profile_pic: userDetails.profile_pic,
-        online: onlineUser.has(userId),
-      };
-  
-      socket.emit("message-user", payload);
-  
-      const getConversationMessage = await ConversationModel.findOne({
-        $or: [
-          { sender: user?._id, receiver: userId },
-          { sender: userId, receiver: user?._id },
-        ],
-      })
-        .populate("messages")
-        .sort({ updatedAt: -1 });
-  
-      socket.emit("message", getConversationMessage?.messages || []);
-    } catch (err) {
-      console.error("Error fetching message-page data:", err.message);
-      socket.emit("error", { message: "Internal server error" });
-    }
+    console.log("userId", userId);
+    const userDetails = await UserModel.findById(userId).select("-password");
+
+    const payload = {
+      _id: userDetails?._id,
+      name: userDetails?.name,
+      email: userDetails?.email,
+      profile_pic: userDetails?.profile_pic,
+      online: onlineUser.has(userId),
+    };
+    socket.emit("message-user", payload);
+
+    // get privious message
+    const getConversationMessage = await ConversationModel.findOne({
+      $or: [
+        { sender: user?._id, receiver: userId },
+        { sender: userId, receiver: user?._id },
+      ],
+    })
+      .populate("messages")
+      .sort({ updatedAt: -1 });
+
+    socket.emit("message", getConversationMessage?.messages || []);
   });
-  
 
   //new message
   socket.on("new message", async (data) => {
@@ -169,10 +163,8 @@ io.on("connection", async (socket) => {
 
   //disconnect
   socket.on("disconnect", () => {
-    if (user?._id) {
-      onlineUser.delete(user._id.toString());
-    }
-    console.log("User disconnected:", socket.id);
+    onlineUser.delete(user?._id?.toString());
+    console.log("disconnect user", socket.id);
   });
 });
 
