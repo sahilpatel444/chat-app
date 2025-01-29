@@ -22,6 +22,7 @@
     
       origin: process.env.FRONTEND_URL,
       credentials: true,
+      methods: ["GET", "POST"],
     },
     path: '/index.js'
   });
@@ -31,15 +32,21 @@
   const onlineUser = new Set();
 
   io.on("connection", async (socket) => {
-    console.log("connection", socket.id);
+    console.log("New connection", socket.id);
 
     const token = socket.handshake.auth.token;
-    // if (!token) {
-    //   socket.disconnect(true);
-    // }
+    if (!token) {
+      socket.disconnect(true);
+      return;
+    }
 
     // current user details
     const user = await getUserDetailsFromToken(token);
+    if (!user) {
+      console.log("Invalid user token");
+      socket.disconnect(true);
+      return;
+    }
 
     // create a room
     socket.join(user?._id?.toString());

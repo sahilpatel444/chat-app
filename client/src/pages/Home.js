@@ -45,7 +45,9 @@ const Home = () => {
 
   // socket connectiom
   useEffect(() => {
-    const socketConnection = io(`${process.env.REACT_APP_BACKEND_URL}`, {
+    const socketConnection = io(process.env.REACT_APP_BACKEND_URL  || "https://chat-app-sever-ou5p.onrender.com", {
+      transports: ["websocket"], // Force WebSocket to prevent polling issues
+      withCredentials: true,
       auth: {
         token: localStorage.getItem("token"),
       },
