@@ -44,26 +44,58 @@ const Home = () => {
   }, []);
 
   // socket connectiom
-  useEffect(() => {
-    const socketConnection = io(process.env.REACT_APP_BACKEND_URL  , {
-      // transports: ["websocket"], // Force WebSocket to prevent polling issues
-      // transports: ["websocket", "polling"],
-      withCredentials: true,
-      auth: {
-        token: localStorage.getItem("token"),
-      },
-    });
- console.log(process.env.REACT_APP_BACKEND_URL,"backend url")
-    socketConnection.on("onlineUser", (data) => {
-      console.log(data);
-      dispatch(setOnlineUser(data));
-    });
+//   useEffect(() => {
+//     const socketConnection = io(process.env.REACT_APP_BACKEND_URL  , {
+//       // transports: ["websocket"], // Force WebSocket to prevent polling issues
+//       // transports: ["websocket", "polling"],
+//       withCredentials: true,
+//       auth: {
+//         token: localStorage.getItem("token"),
+//       },
+//     });
+//  console.log(process.env.REACT_APP_BACKEND_URL,"backend url")
+//     socketConnection.on("onlineUser", (data) => {
+//       console.log(data);
+//       dispatch(setOnlineUser(data));
+//     });
 
-    dispatch(setSocketConnection(socketConnection));
-    return () => {
-      socketConnection.disconnect();
-    };
-  }, []);
+//     dispatch(setSocketConnection(socketConnection));
+//     return () => {
+//       socketConnection.disconnect();
+//     };
+//   }, []);
+useEffect(() => {
+  const backendURL = process.env.REACT_APP_BACKEND_URL;
+  console.log("Backend URL:", backendURL);
+
+  const token = localStorage.getItem("token");
+  console.log("Retrieved Token:", token);
+
+  const socketConnection = io(backendURL, {
+    withCredentials: true,
+    transports: ["websocket"],  // Force WebSocket
+  auth: { token: localStorage.getItem("token") },
+  reconnection: true, 
+  reconnectionAttempts: 5,
+  reconnectionDelay: 2000,
+  });
+
+  socketConnection.on("connect_error", (err) => {
+    console.error("Socket connection error:", err.message);
+  });
+
+  socketConnection.on("onlineUser", (data) => {
+    console.log("Online Users:", data);
+    dispatch(setOnlineUser(data));
+  });
+
+  dispatch(setSocketConnection(socketConnection));
+
+  return () => {
+    socketConnection.close();  // Properly clean up connection
+  };
+}, []);
+
 
   const basePath = location.pathname === "/";
 
