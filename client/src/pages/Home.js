@@ -45,19 +45,15 @@ const Home = () => {
 
   // socket connectiom
   useEffect(() => {
-    const socketConnection = io(
-      process.env.REACT_APP_BACKEND_URL ||
-        "https://chat-app-sever-ou5p.onrender.com",
-      {
-        // transports: ["websocket"], // Force WebSocket to prevent polling issues
-        transports: ["websocket", "polling"],
-        withCredentials: true,
-        auth: {
-          token: localStorage.getItem("token"),
-        },
-      }
-    );
-    console.log(process.env.REACT_APP_BACKEND_URL, "backend url");
+    const socketConnection = io(process.env.REACT_APP_BACKEND_URL  , {
+      // transports: ["websocket"], // Force WebSocket to prevent polling issues
+      // transports: ["websocket", "polling"],
+      withCredentials: true,
+      auth: {
+        token: localStorage.getItem("token"),
+      },
+    });
+ console.log(process.env.REACT_APP_BACKEND_URL,"backend url")
     socketConnection.on("onlineUser", (data) => {
       console.log(data);
       dispatch(setOnlineUser(data));

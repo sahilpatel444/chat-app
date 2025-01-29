@@ -3,7 +3,7 @@
   const http = require("http");
   const getUserDetailsFromToken = require("../helpers/getUserDetailsFromToken");
   const UserModel = require("../models/UserModel");
-  // const cors = require("cors");
+  const cors = require("cors");
 
   const {
     ConversationModel,
@@ -16,6 +16,7 @@
 
   // socket connection
   const server = http.createServer(app);
+
   // app.use(cors({ origin: "*" }));
   const io = new Server(server, {
     cors: {
@@ -24,7 +25,7 @@
       credentials: true,
       methods: ["GET", "POST"],
     },
-    path: '/index.js'
+    // path: '/index.js'
   });
   // socket running at http://localhost:8080/
 
@@ -35,10 +36,10 @@
     console.log("New connection", socket.id);
 
     const token = socket.handshake.auth.token;
-    if (!token) {
-      socket.disconnect(true);
-      return;
-    }
+    // if (!token) {
+    //   socket.disconnect(true);
+    //   return;
+    // }
 
     // current user details
     const user = await getUserDetailsFromToken(token);
