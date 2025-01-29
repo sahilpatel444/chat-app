@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,7 +10,7 @@ import {
   setUser,
 } from "../redux/userSlice";
 import Sidebar from "../components/Sidebar";
-import logo from "../assets/logo.png";
+
 import io from "socket.io-client";
 const Home = () => {
   const user = useSelector((state) => state.user);
@@ -44,12 +45,12 @@ const Home = () => {
 
   // socket connectiom
   useEffect(() => {
-    const socketConnection = io(process.env.REACT_APP_BACKEND_URL, {
+    const socketConnection = io(`${process.env.REACT_APP_BACKEND_URL}`, {
       auth: {
         token: localStorage.getItem("token"),
       },
     });
-
+ console.log(process.env.REACT_APP_BACKEND_URL,"backend url")
     socketConnection.on("onlineUser", (data) => {
       console.log(data);
       dispatch(setOnlineUser(data));
