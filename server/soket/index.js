@@ -20,9 +20,10 @@
   const io = new Server(server, {
     cors: {
     
-      origin: 'https://talk-now-app.netlify.app',
+      origin: process.env.FRONTEND_URL,
       credentials: true,
     },
+    path: '/index.js'
   });
   // socket running at http://localhost:8080/
 
