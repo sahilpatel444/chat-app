@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
+
 import { Link, useParams } from "react-router-dom";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { FaAngleLeft } from "react-icons/fa";
@@ -194,7 +195,7 @@ const MessagePage = () => {
         <div className="flex flex-col gap-2 py-2 mx-2" ref={currentMessage}>
           {allMessage?.map((msg, index) => {
             return (
-              <div
+              <div key={msg._id || index}
                 className={` p-1 py-1  rounded w-fit max-w-[280px] md:max-w-sm lg:max-w-md ${user._id === msg.msgByUserId ? "ml-auto bg-msgbg text-black"  : "bg-white"
                   }`}
               >

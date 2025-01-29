@@ -2,7 +2,12 @@ import axios from "axios";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { logout, setOnlineUser, setSocketConnection, setUser } from "../redux/userSlice";
+import {
+  logout,
+  setOnlineUser,
+  setSocketConnection,
+  setUser,
+} from "../redux/userSlice";
 import Sidebar from "../components/Sidebar";
 import logo from "../assets/logo.png";
 import io from "socket.io-client";
@@ -12,7 +17,7 @@ const Home = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  console.log('user',user)
+  console.log("user", user);
   const fetchUserDetails = async () => {
     try {
       const URL = `${process.env.REACT_APP_BACKEND_URL}/api/user-details`;
@@ -47,16 +52,16 @@ const Home = () => {
 
     socketConnection.on("onlineUser", (data) => {
       console.log(data);
-      dispatch(setOnlineUser(data))
+      dispatch(setOnlineUser(data));
     });
 
-    dispatch(setSocketConnection(socketConnection))
+    dispatch(setSocketConnection(socketConnection));
     return () => {
       socketConnection.disconnect();
     };
   }, []);
 
-  const basePath = location.pathname === '/';
+  const basePath = location.pathname === "/";
 
   return (
     <div className="grid lg:grid-cols-[300px,1fr] h-screen max-h-screen">
@@ -73,9 +78,7 @@ const Home = () => {
           !basePath ? "hidden" : "lg:flex"
         }`}
       >
-        <div>
-          {/* <img src={logo} width={250} alt='logo' /> */}
-        </div>
+        <div>{/* <img src={logo} width={250} alt='logo' /> */}</div>
         {/* <p className="text-lg mt-2 text-slate-500">Select user to message</p> */}
       </div>
     </div>
