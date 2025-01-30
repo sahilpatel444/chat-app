@@ -35,7 +35,7 @@ const conversationSchema = new mongoose.Schema(
     sender: {
       // type: mongoose.Schema.ObjectId,
      type: mongoose.Schema.Types.ObjectId,
-     // type : String,
+     type : String,
       require: true,
       ref: "User",
       validate: {
@@ -46,7 +46,7 @@ const conversationSchema = new mongoose.Schema(
     },
     receiver: {
       type: mongoose.Schema.Types.ObjectId,
-     // type : String,
+     type : String,
       require: true,
       ref: "User",
       validate: {
