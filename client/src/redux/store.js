@@ -17,9 +17,9 @@ export const store = configureStore({
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-        serializableCheck: false, // Disable serializability checks
-        immutableCheck: false, // Disable immutability checks (optional)
-      }),
+      serializableCheck: false, // Disable serializability checks
+      immutableCheck: false, // Disable immutability checks (optional)
+    }),
 });
 
 export const persistor = persistStore(store);
