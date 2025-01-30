@@ -33,22 +33,30 @@ const messageSchema = new mongoose.Schema(
 const conversationSchema = new mongoose.Schema(
   {
     sender: {
-      type: mongoose.Schema.ObjectId,
-     // type: mongoose.Schema.Types.ObjectId,
+      // type: mongoose.Schema.ObjectId,
+     type: mongoose.Schema.Types.ObjectId,
      // type : String,
       require: true,
       ref: "User",
+      validate: {
+        validator: (value) => mongoose.Types.ObjectId.isValid(value),
+        message: "Invalid sender ObjectId",
+      },
      
     },
     receiver: {
-      type: mongoose.Schema.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
      // type : String,
       require: true,
       ref: "User",
+      validate: {
+        validator: (value) => mongoose.Types.ObjectId.isValid(value),
+        message: "Invalid receiver ObjectId",
+      },
     },
     messages: [
       {
-        type: mongoose.Schema.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "Message",
       },
     ],
