@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: full-stack-backend
+    runtime: node
+    repo: https://github.com/sahilpatel444/chat-app/tree/main/server
+    branch: main
+    buildCommand: "npm install"
+    startCommand: "node index.js"
+    envVars:
+      - key: NODE_VERSION
+        value: 18
+      - key: PORT
+        value: 3000
