@@ -27,9 +27,9 @@ const Home = () => {
         withCredentials: true,
       });
 
-      dispatch(setUser(response?.data?.data));
+      dispatch(setUser(response.data.data));
 
-      if (response?.data?.data?.logout) {
+      if (response.data.data.logout) {
         dispatch(logout());
         navigate("/email");
       }
@@ -38,29 +38,30 @@ const Home = () => {
       console.log("error", error);
     }
   };
+
   useEffect(() => {
     fetchUserDetails();
   }, []);
 
   // socket connectiom
-  useEffect(()=>{
-    const socketConnection = io(process.env.REACT_APP_BACKEND_URL,{
-      auth : {
-        token : localStorage.getItem('token')
+  useEffect(() => {
+    const socketConnection = io(process.env.REACT_APP_BACKEND_URL, {
+      auth: {
+        token: localStorage.getItem("token"),
       },
-    })
+    });
 
-    socketConnection.on('onlineUser',(data)=>{
-      console.log(data)
-      dispatch(setOnlineUser(data))
-    })
+    socketConnection.on("onlineUser", (data) => {
+      console.log(data);
+      dispatch(setOnlineUser(data));
+    });
 
-    dispatch(setSocketConnection(socketConnection))
+    dispatch(setSocketConnection(socketConnection));
 
-    return ()=>{
-      socketConnection.disconnect()
-    }
-  },[])
+    return () => {
+      socketConnection.disconnect();
+    };
+  }, []);
   // useEffect(() => {
   //   const backendURL = process.env.REACT_APP_BACKEND_URL;
   //   console.log("Backend URL:", backendURL);
