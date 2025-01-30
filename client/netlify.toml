@@ -1,0 +1,5 @@
+[[redirects]]
+  from = "/api/*"
+  to = "https://chat-app-sever-ou5p.onrender.com/api/:splat"
+  status = 200
+  force = true
