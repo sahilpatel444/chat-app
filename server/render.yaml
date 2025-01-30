@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: full-stack-backend
+    name: server
     runtime: node
     repo: https://github.com/sahilpatel444/chat-app/tree/main/server
     branch: main
