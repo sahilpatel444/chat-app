@@ -71,6 +71,8 @@ io.on("connection", async (socket) => {
   //new message
   socket.on("new message", async (data) => {
     //check conversation is available both user
+    console.log("Received message data:", data);
+ 
 
     let conversation = await ConversationModel.findOne({
       $or: [

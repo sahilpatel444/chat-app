@@ -132,7 +132,7 @@ const MessagePage = () => {
   const handleSendMessage = (e) => {
     e.preventDefault();
 
-    if (message.text || message.imageUrl || message.videoUrl) {
+    if (message?.text || message.imageUrl || message.videoUrl) {
       if (socketConnection) {
         socketConnection.emit("new message", {
           sender: user?._id,

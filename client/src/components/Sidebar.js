@@ -38,21 +38,21 @@ const Sidebar = () => {
             return{
 
               ...conversationUser,
-              userDetails : conversationUser.sender
+              userDetails : conversationUser?.sender
             }
           }
           else if(conversationUser?.receiver?._id !== user?._id){
             return{
 
               ...conversationUser,
-              userDetails : conversationUser.receiver
+              userDetails : conversationUser?.receiver
             }
 
           }else{
             return{
 
               ...conversationUser,
-              userDetails : conversationUser.sender
+              userDetails : conversationUser?.sender
             }
           }
           
