@@ -40,14 +40,14 @@ const conversationSchema = new mongoose.Schema(
       ref: "User",
     },
     receiver: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: mongoose.Schema.ObjectId,
       // type: String,
       require: true,
       ref: "User",
     },
     messages: [
       {
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.ObjectId,
         ref: "Message",
       },
     ],
