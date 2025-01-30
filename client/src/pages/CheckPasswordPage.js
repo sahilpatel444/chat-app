@@ -49,7 +49,7 @@ const CheckPasswordPage = () => {
         url: URL,
         data: {
           userId: location?.state?._id,
-          password: data.password,
+          password: data?.password,
         },
         withCredentials: true,
       });

@@ -27,14 +27,13 @@ const Home = () => {
         withCredentials: true,
       });
 
-      dispatch(setUser(response.data.data));
+      dispatch(setUser(response?.data?.data));
 
-      if (response.data.data.logout) {
+      if (response?.data?.data?.logout) {
         dispatch(logout());
         navigate("/email");
       }
-
-      console.log("Current user Details", response);
+      console.log("current user Details", response);
     } catch (error) {
       console.log("error", error);
     }
@@ -44,58 +43,55 @@ const Home = () => {
   }, []);
 
   // socket connectiom
-//   useEffect(() => {
-//     const socketConnection = io(process.env.REACT_APP_BACKEND_URL  , {
-//       // transports: ["websocket"], // Force WebSocket to prevent polling issues
-//       // transports: ["websocket", "polling"],
-//       withCredentials: true,
-//       auth: {
-//         token: localStorage.getItem("token"),
-//       },
-//     });
-//  console.log(process.env.REACT_APP_BACKEND_URL,"backend url")
-//     socketConnection.on("onlineUser", (data) => {
-//       console.log(data);
-//       dispatch(setOnlineUser(data));
-//     });
+  useEffect(()=>{
+    const socketConnection = io(process.env.REACT_APP_BACKEND_URL,{
+      auth : {
+        token : localStorage.getItem('token')
+      },
+    })
 
-//     dispatch(setSocketConnection(socketConnection));
-//     return () => {
-//       socketConnection.disconnect();
-//     };
-//   }, []);
-useEffect(() => {
-  const backendURL = process.env.REACT_APP_BACKEND_URL;
-  console.log("Backend URL:", backendURL);
+    socketConnection.on('onlineUser',(data)=>{
+      console.log(data)
+      dispatch(setOnlineUser(data))
+    })
 
-  const token = localStorage.getItem("token");
-  console.log("Retrieved Token:", token);
+    dispatch(setSocketConnection(socketConnection))
 
-  const socketConnection = io(backendURL, {
-    withCredentials: true,
-    transports: ["websocket"],  // Force WebSocket
-  auth: { token: localStorage.getItem("token") },
-  reconnection: true, 
-  reconnectionAttempts: 5,
-  reconnectionDelay: 2000,
-  });
+    return ()=>{
+      socketConnection.disconnect()
+    }
+  },[])
+  // useEffect(() => {
+  //   const backendURL = process.env.REACT_APP_BACKEND_URL;
+  //   console.log("Backend URL:", backendURL);
 
-  socketConnection.on("connect_error", (err) => {
-    console.error("Socket connection error:", err.message);
-  });
+  //   const token = localStorage.getItem("token");
+  //   console.log("Retrieved Token:", token);
 
-  socketConnection.on("onlineUser", (data) => {
-    console.log("Online Users:", data);
-    dispatch(setOnlineUser(data));
-  });
+  //   const socketConnection = io(backendURL, {
+  //     withCredentials: true,
+  //     // transports: ["websocket"], // Force WebSocket
+  //     auth: { token: localStorage.getItem("token") },
+  //     reconnection: true,
+  //     reconnectionAttempts: 5,
+  //     reconnectionDelay: 2000,
+  //   });
 
-  dispatch(setSocketConnection(socketConnection));
+  //   socketConnection.on("connect_error", (err) => {
+  //     console.error("Socket connection error:", err.message);
+  //   });
 
-  return () => {
-    socketConnection.close();  // Properly clean up connection
-  };
-}, []);
+  //   socketConnection.on("onlineUser", (data) => {
+  //     console.log("Online Users:", data);
+  //     dispatch(setOnlineUser(data));
+  //   });
 
+  //   dispatch(setSocketConnection(socketConnection));
+
+  //   return () => {
+  //     socketConnection.close(); // Properly clean up connection
+  //   };
+  // }, []);
 
   const basePath = location.pathname === "/";
 
