@@ -27,12 +27,12 @@ const Home = () => {
         withCredentials: true,
       });
       dispatch(setUser(response.data.data));
-      
+
       if (response.data.data.logout) {
         dispatch(logout());
         navigate("/email");
       }
-     
+
       console.log("current user Details", response);
     } catch (error) {
       console.log("error", error);
